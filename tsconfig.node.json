@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@config": ["bot.config.ts"],
+      "@package": ["package.json"],
+      "@/*": ["src/*"]
+    },
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "*.config.ts",
+    "src/**/*"
+  ]
+}
