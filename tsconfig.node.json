@@ -6,7 +6,6 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@config": ["bot.config.ts"],
       "@package": ["package.json"],
       "@/*": ["src/*"]
     },

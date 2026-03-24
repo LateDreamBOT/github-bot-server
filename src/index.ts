@@ -2,19 +2,26 @@ import { App } from 'octokit';
 import { Webhooks } from '@octokit/webhooks';
 import Koa from 'koa';
 import koaBody from 'koa-body';
-import config from '@config';
 import Logger from './utils/logger';
 import generateUserAgent from './utils/generateUserAgent';
 import comment from './utils/comment';
 import parseCommentCmd from './utils/parseCommentCmd';
 import cmds from './utils/commands';
-import { readFileSync } from 'fs';
+import { loadLocale } from './utils/locale';
+import * as jsonc from 'jsonc-parser';
+import { resolve } from 'path';
+import { existsSync, readFileSync } from 'fs';
 
 import packageJson from '@package';
 
-const logger = Logger('server');
+const cwd = process.cwd();
 
-const privateKey = readFileSync(config.app.privateKey, 'utf-8');
+const config: UserConfig = jsonc.parse(readFileSync(resolve(cwd, 'config.jsonc'), 'utf-8'));
+
+const logger = Logger('server', config.server.logLevel);
+
+const privateKey = config.app.privateKey.startsWith('-----')? config.app.privateKey:
+	readFileSync(resolve(cwd, config.app.privateKey), 'utf-8');
 
 const githubApp = new App({
 	appId: config.app.id,
@@ -263,7 +270,29 @@ app.on('error', (err) => {
 });
 
 app.listen(config.server.port, () => {
-	console.log(`\x1b[1m\x1b[5m\x1b[34m${packageJson.name}\x1b[0m \x1b[36mv${packageJson.version}\x1b[0m\n`);
+	console.log(`
+█───████─███─███─████──████─███─████─█───█────████──████─███
+█───█──█──█──█───█──██─█──█─█───█──█─██─██────█──██─█──█──█─
+█───████──█──███─█──██─████─███─████─█─█─█────████──█──█──█─
+█───█──█──█──█───█──██─█─█──█───█──█─█───█────█──██─█──█──█─
+███─█──█──█──███─████──█─█──███─█──█─█───█────████──████──█─ \x1b[36mv${packageJson.version}\x1b[0m
+`);
+	console.log('\tPowered by Koa\n');
+
+	const localeFile = resolve(cwd, 'locales', config.app.locale);
+	const supportedExt = ['.json', '.jsonc'];
+
+	supportedExt.some((ext, index) => {
+		if(existsSync(localeFile + ext)) {
+			logger.info(`will use locale file: ${config.app.locale}${ext}`);
+			loadLocale(localeFile + ext);
+			return true;
+		} else if(index === supportedExt.length - 1) {
+			logger.fatal(`no locale file found: ${config.app.locale}`);
+			process.exit(1);
+		}
+	});
+
 	logger.info(`bot server is running at: http://localhost:${config.server.port}`);
 	logger.info(`webhook endpoint available at: http://localhost:${config.server.port}/webhook`);
 });

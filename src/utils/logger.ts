@@ -1,8 +1,7 @@
 import log4js from 'log4js';
-import config from '@config';
 
-export default (channel: string) => {
+export default (channel: string, logLevel: string) => {
 	const newLogger = log4js.getLogger(channel);
-	newLogger.level = config.server.logLevel;
+	newLogger.level = logLevel;
 	return newLogger;
 }
