@@ -33,7 +33,7 @@ jobs:
           cp config.jsonc dist/
           cp locales/* dist/
       - name: upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.build.outputs.hash }}
           path: dist
