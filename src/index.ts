@@ -199,13 +199,13 @@ webhooks.on('issue_comment.created', async (ev) => {
 			case 'merge':
 			case 'merge-squash':
 			case 'merge-rebase':
-				if(isIssue)
-					await octokit.rest.issues.updateComment({
-						...shared,
-						comment_id: cmt.data.id,
-						body: comment('cmd-not-suitable-env', author, cmd)!
-					});
-				else {
+				// if(isIssue)
+				// 	await octokit.rest.issues.updateComment({
+				// 		...shared,
+				// 		comment_id: cmt.data.id,
+				// 		body: comment('cmd-not-suitable-env', author, cmd)!
+				// 	});
+				// else {
 					const merge_method: any = cmd.action.split('-').length === 2?
 						cmd.action.split('-')[1]: 'merge';
 					await octokit.rest.pulls.merge({
@@ -213,7 +213,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 						pull_number: ev.payload.issue.number,
 						merge_method
 					});
-				}
+				// }
 				break;
 		}
 	}
