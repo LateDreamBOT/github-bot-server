@@ -108,13 +108,13 @@ webhooks.on('issue_comment.created', async (ev) => {
 	if(!cmds.all.includes(cmd.action) && !config.app.cmd.prefix) {
 		await octokit.rest.issues.createComment({
 			...shared,
-			body: comment('cmd-unknown', author, cmd)
+			body: comment('cmd-unknown-msg', author, cmd)
 		});
 		return;
 	} else {
 		const body = cmd.action === 'help'?
-			comment('cmd-help', author, undefined, isIssue? 'issue': 'pr'):
-			comment('cmd-comment', author, cmd);
+			comment('cmd-help-msg', author, undefined, isIssue? 'issue': 'pr'):
+			comment('cmd-comment-msg', author, cmd);
 
 		const cmt = await octokit.rest.issues.createComment({
 			...shared,
@@ -168,7 +168,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-idk-args', author, cmd)
+						body: comment('cmd-idk-args-msg', author, cmd)
 					});
 				else await octokit.rest.issues.addLabels({
 					...shared,
@@ -180,7 +180,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-idk-args', author, cmd)
+						body: comment('cmd-idk-args-msg', author, cmd)
 					});
 				else await octokit.rest.issues.setLabels({
 					...shared,
@@ -192,7 +192,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-idk-args', author, cmd)
+						body: comment('cmd-idk-args-msg', author, cmd)
 					});
 				else await octokit.rest.issues.addAssignees({
 					owner: ev.payload.repository.owner.login,
@@ -206,7 +206,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-idk-args', author, cmd)
+						body: comment('cmd-idk-args-msg', author, cmd)
 					});
 				else await octokit.rest.issues.removeAssignees({
 					owner: ev.payload.repository.owner.login,
@@ -313,5 +313,5 @@ app.listen(config.server.port, () => {
 	});
 
 	logger.info(`bot server is running at: http://localhost:${config.server.port}`);
-	logger.info(`webhook endpoint available at: http://localhost:${config.server.port}/webhook`);
+	logger.info(`webhook endpoint available at: http://localhost:${config.server.port}/webhook\n`);
 });

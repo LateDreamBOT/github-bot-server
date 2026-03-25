@@ -14,12 +14,12 @@
       // 命令前缀
       "prefix": "/",
       // 权限等级要求
-      // 0: 任何人
-      // 1: bot / contributor / collaborator / owner
-      // 2: contributor / collaborator / owner
-      // 3: collaborator / owner
-      // 4: owner
-      "permissionLevel": 3
+      // any: 任何人
+      // bot: bot / contributor / collaborator / owner
+      // contributor: contributor / collaborator / owner
+      // collaborator: collaborator / owner
+      // owner: owner
+      "permissionLevel": "collaborator"
     }
   },
   "server": {

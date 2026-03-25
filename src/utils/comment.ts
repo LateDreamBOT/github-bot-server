@@ -18,5 +18,5 @@ export default (
 ) => {
 	let cmds;
 	if(helpType) cmds = generateHelpMsg(helpType);
-	return get(key, {author, action: cmd?.action, cmds});
+	return get(key, {author, action: get(`cmd.${cmd?.action}`), cmds});
 }

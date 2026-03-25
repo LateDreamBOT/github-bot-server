@@ -1,5 +1,10 @@
 {
   "execMap": {
     "ts": "unrun"
-  }
+  },
+  "watch": [
+    "src/**/*",
+    "locales/**/*",
+    "config.jsonc"
+  ]
 }

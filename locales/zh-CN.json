@@ -10,7 +10,7 @@
   "cmd-permission-denied-msg": "@{{author}} 哎呀呀，你的身份等级不够操作`{{action}}`呢",
 
   "cmd.close": "关闭",
-  "cmd.close-no-plan": "以无计划关闭",
+  "cmd.close-not-plan": "以无计划关闭",
   "cmd.close-dupl": "以重复关闭",
   "cmd.reopen": "重新打开",
   "cmd.merge": "合并",
@@ -25,7 +25,7 @@
 
   "cmd-desc.help": "显示当前信息",
   "cmd-desc.close": "关闭当前 PR 或 Issue",
-  "cmd-desc.close-no-plan": "以无计划关闭当前 Issue",
+  "cmd-desc.close-not-plan": "以无计划关闭当前 Issue",
   "cmd-desc.close-dupl": "以重复关闭当前 Issue",
   "cmd-desc.reopen": "重新打开当前 PR 或 Issue",
   "cmd-desc.merge": "合并当前 PR",
