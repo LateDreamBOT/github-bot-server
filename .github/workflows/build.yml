@@ -1,0 +1,39 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v6
+      - name: setup pnpm
+        uses: pnpm/action-setup@v5
+      - name: setup node.js
+        uses: actions/setup-node@v6
+        with:
+          cache: pnpm
+          node-version: 24
+      - name: install deps and build
+        id: build
+        run: |
+          sudo apt install jq -y
+          jq '.version = "$(git rev-parse --short HEAD)"' package.json > package.json
+          echo 'hash=$(git rev-parse --short HEAD)' >> '$GITHUB_OUTPUT'
+          pnpm install --frozen-lockfile
+          pnpm run build
+      - name: copy necessary files
+        run: |
+          cp package.json dist/
+          cp config.jsonc dist/
+          cp locales/* dist/
+      - name: upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ steps.build.outputs.hash }}
+          path: dist
