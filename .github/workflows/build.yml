@@ -22,9 +22,12 @@ jobs:
       - name: install deps and build
         id: build
         run: |
+          hash=$(git rev-parse --short HEAD)
           sudo apt install jq -y
-          jq '.version = "$(git rev-parse --short HEAD)"' package.json > package.json
-          echo 'hash=$(git rev-parse --short HEAD)' >> '$GITHUB_OUTPUT'
+          jq --arg hash "$hash" '.version = $hash' package.json > temp.json
+          cat temp.json > package.json
+          echo "version: $hash"
+          echo "hash=$hash" >> "$GITHUB_OUTPUT"
           pnpm install --frozen-lockfile
           pnpm run build
       - name: copy necessary files
