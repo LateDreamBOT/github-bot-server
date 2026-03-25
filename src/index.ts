@@ -33,21 +33,17 @@ const webhooks = new Webhooks({
 	secret: config.server.secret
 });
 
-webhooks.on('pull_request', async (ev) => {
-	const installationId = ev.payload?.installation?.id;
+webhooks.on('pull_request.opened', async (ev) => {
+	const installationId = ev.payload.installation?.id;
 	if(!installationId) return logger.warn('installation id is empty');
 	const octokit = await githubApp.getInstallationOctokit(installationId);
 
-	switch(ev.payload.action) {
-		case 'opened':
-			await octokit.rest.issues.createComment({
-				owner: ev.payload.repository.full_name.split('/')[0],
-				repo: ev.payload.repository.name,
-				issue_number: ev.payload.pull_request.number,
-				body: comment('pr-open', ev.payload.sender.login)!
-			});
-			break;
-	}
+	await octokit.rest.issues.createComment({
+		owner: ev.payload.repository.full_name.split('/')[0],
+		repo: ev.payload.repository.name,
+		issue_number: ev.payload.pull_request.number,
+		body: comment('pr-open', ev.payload.sender.login)!
+	});
 });
 
 webhooks.on('issues', async (ev) => {
