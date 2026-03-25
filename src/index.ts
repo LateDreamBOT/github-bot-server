@@ -42,7 +42,7 @@ webhooks.on('pull_request.opened', async (ev) => {
 		owner: ev.payload.repository.full_name.split('/')[0],
 		repo: ev.payload.repository.name,
 		issue_number: ev.payload.pull_request.number,
-		body: comment('pr-open', ev.payload.sender.login)!
+		body: comment('pr-open', ev.payload.sender.login)
 	});
 });
 
@@ -57,7 +57,7 @@ webhooks.on('issues', async (ev) => {
 				owner: ev.payload.repository.owner.login,
 				repo: ev.payload.repository.name,
 				issue_number: ev.payload.issue.number,
-				body: comment('issue-open', ev.payload.sender.login)!
+				body: comment('issue-open', ev.payload.sender.login)
 			});
 			break;
 	}
@@ -71,27 +71,50 @@ webhooks.on('issue_comment.created', async (ev) => {
 	const author = ev.payload.sender.login;
 	const isIssue = !!ev.payload.issue;
 
-	const cmd = parseCommentCmd(ev.payload.comment.body);
+	const cmd = parseCommentCmd(ev.payload.comment.body, config.app.cmd.prefix);
 	if(!cmd) return;
-	let body: string;
-	if(!cmds.all.includes(cmd.action)) body = comment('cmd-unknown', author)!;
+	logger.debug('new cmd received:', JSON.stringify(cmd, null, 2));
 
-	else {
-		switch(cmd.action) {
-			case 'help':
-				const isIssue = !!ev.payload.issue;
-				body = comment('cmd-help', author, undefined, isIssue? 'issue': 'pr')!;
+	const shared = {
+		owner: ev.payload.repository.owner.login,
+		repo: ev.payload.repository.name,
+		issue_number: ev.payload.issue.number,
+	}
+
+	if(ev.payload.comment.author_association !== 'MEMBER') {
+		const level = config.app.cmd.permissionLevel?.toLowerCase() || 'any';
+
+		switch(level) {
+			case 'any':
+				logger.warn('permission level is `any` or not set, this may case security risk');
 				break;
+			case 'bot':
+				if(ev.payload.sender.type === 'bot') break;
+			case 'contributor':
+				if(ev.payload.comment.author_association.includes('CONTRIBUTOR')) break;
+			case 'collaborator':
+				if(ev.payload.comment.author_association === 'COLLABORATOR') break;
+			case 'owner':
+				if(ev.payload.comment.author_association === 'OWNER') break;
 			default:
-				body = comment('cmd-comment', author, cmd)!;
-				break;
+				logger.warn(`user ${author} has try to execute ${cmd.action} but not in level ${level.toUpperCase()}`);
+				await octokit.rest.issues.createComment({
+					...shared,
+					body: comment('cmd-permission-denied-msg', author, cmd)
+				});
+				return false;
 		}
-
-		const shared = {
-			owner: ev.payload.repository.owner.login,
-			repo: ev.payload.repository.name,
-			issue_number: ev.payload.issue.number,
-		}
+	}
+	if(!cmds.all.includes(cmd.action) && !config.app.cmd.prefix) {
+		await octokit.rest.issues.createComment({
+			...shared,
+			body: comment('cmd-unknown', author, cmd)
+		});
+		return;
+	} else {
+		const body = cmd.action === 'help'?
+			comment('cmd-help', author, undefined, isIssue? 'issue': 'pr'):
+			comment('cmd-comment', author, cmd);
 
 		const cmt = await octokit.rest.issues.createComment({
 			...shared,
@@ -112,7 +135,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-not-suitable-env', author, cmd)!
+						body: comment('cmd-not-suitable-env', author, cmd)
 					});
 				else await octokit.rest.issues.update({
 					...shared,
@@ -125,7 +148,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-not-suitable-env', author, cmd)!
+						body: comment('cmd-not-suitable-env', author, cmd)
 					});
 				else await octokit.rest.issues.update({
 					...shared,
@@ -145,7 +168,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-idk-args', author, cmd)!
+						body: comment('cmd-idk-args', author, cmd)
 					});
 				else await octokit.rest.issues.addLabels({
 					...shared,
@@ -157,7 +180,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-idk-args', author, cmd)!
+						body: comment('cmd-idk-args', author, cmd)
 					});
 				else await octokit.rest.issues.setLabels({
 					...shared,
@@ -169,7 +192,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-idk-args', author, cmd)!
+						body: comment('cmd-idk-args', author, cmd)
 					});
 				else await octokit.rest.issues.addAssignees({
 					owner: ev.payload.repository.owner.login,
@@ -183,7 +206,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 					await octokit.rest.issues.updateComment({
 						...shared,
 						comment_id: cmt.data.id,
-						body: comment('cmd-idk-args', author, cmd)!
+						body: comment('cmd-idk-args', author, cmd)
 					});
 				else await octokit.rest.issues.removeAssignees({
 					owner: ev.payload.repository.owner.login,
@@ -199,7 +222,7 @@ webhooks.on('issue_comment.created', async (ev) => {
 				// 	await octokit.rest.issues.updateComment({
 				// 		...shared,
 				// 		comment_id: cmt.data.id,
-				// 		body: comment('cmd-not-suitable-env', author, cmd)!
+				// 		body: comment('cmd-not-suitable-env', author, cmd)
 				// 	});
 				// else {
 					const merge_method: any = cmd.action.split('-').length === 2?
@@ -226,7 +249,7 @@ app.use(async(ctx, next) => {
 				const id = ctx.get('x-github-delivery');
 				const name = ctx.get('x-github-event');
 
-				logger.debug(`new request: ${JSON.stringify(ctx.request.body, null, 2)}`);
+				logger.debug('new webhook request received:', JSON.stringify({id, name}));
 				const body = JSON.stringify(ctx.request.body);
 				if(!body) {
 					ctx.status = 400;

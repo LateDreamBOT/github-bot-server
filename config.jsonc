@@ -8,7 +8,19 @@
     // 可以是路径 或 内容
     "privateKey": "./key/kawaii-latedreambot.2026-03-14.private-key.pem",
     // 使用的语言包
-    "locale": "zh-CN"
+    "locale": "zh-CN",
+    // 命令配置
+    "cmd": {
+      // 命令前缀
+      "prefix": "/",
+      // 权限等级要求
+      // 0: 任何人
+      // 1: bot / contributor / collaborator / owner
+      // 2: contributor / collaborator / owner
+      // 3: collaborator / owner
+      // 4: owner
+      "permissionLevel": 3
+    }
   },
   "server": {
     // 服务器端口

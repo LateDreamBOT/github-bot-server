@@ -8,7 +8,7 @@ export const loadLocale = (path: string) => {
 	Object.assign(locales, jsonc.parse(json));
 }
 
-export const get = (key: string, params?: Record<string, string>) => {
+export const get = (key: string, params?: Record<string, string | undefined>) => {
 	const raw: string = (locales as Record<string, string>)[key];
 	if(!raw) return 'missing-translation';
 	const result = raw.replace(/{{(\w+)}}/g, (_, param: string) => (params?.[param]) || '');

@@ -7,6 +7,7 @@
   "cmd-unknown-msg": "@{{author}} 哎呀呀，我不会那个呢~ 请使用 `help` 指令查看所有指令哦",
   "cmd-not-suitable-env": "@{{author}} 哎呀呀，该场景下不能执行那个操作哦 请使用 `help` 指令查看当前场景下支持的所有指令哦",
   "cmd-idk-args-msg": "@{{author}} 操作`{{action}}`需要更多参数哦",
+  "cmd-permission-denied-msg": "@{{author}} 哎呀呀，你的身份等级不够操作`{{action}}`呢",
 
   "cmd.close": "关闭",
   "cmd.close-no-plan": "以无计划关闭",

@@ -5,6 +5,13 @@ type AppConfig = {
 	privateKey: string;
 	/** language package */
 	locale: string;
+	/** command config */
+	cmd: {
+		/** command prefix */
+		prefix?: string;
+		/** permission level */
+		permissionLevel?: 'any' | 'bot' | 'contributor' | 'collaborator' | 'owner';
+	}
 }
 
 type ServerConfig = {
