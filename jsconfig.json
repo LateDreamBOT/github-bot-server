@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2022",
-    "module": "es2022",
+    "module": "esnext",
     "moduleResolution": "bundler",
     "outDir": "./dist",
     "baseUrl": "./",
@@ -16,7 +16,6 @@
     "resolveJsonModule": true
   },
   "include": [
-    "*.config.ts",
     "src/**/*"
   ]
 }
