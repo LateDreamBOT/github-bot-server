@@ -13,14 +13,14 @@
     "@octokit/rest": "^22.0.1",
     "@octokit/webhooks": "^14.2.0",
     "jsonc-parser": "^3.3.1",
-    "koa": "^3.1.2",
-    "koa-body": "^7.0.1",
+    "koa": "^3.2.1",
+    "koa-body": "^8.0.0",
     "log4js": "^6.9.1",
     "octokit": "^5.0.5"
   },
   "devDependencies": {
-    "@types/koa": "^3.0.1",
-    "@types/node": "^25.5.0"
+    "@types/koa": "^3.0.3",
+    "@types/node": "^25.9.1"
   },
-  "packageManager": "pnpm@10.32.1"
+  "packageManager": "pnpm@11.5.1"
 }
