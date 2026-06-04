@@ -11,8 +11,8 @@ const parsePrivateKey = (privateKey) => {
 		privateKey.startsWith('-----BEGIN RSA PRIVATE KEY-----') &&
 		privateKey.endsWith('-----END RSA PRIVATE KEY-----')
 	) return privateKey;
-	else if(existsSync(resolve(cwd, privateKey)))
-		return readFileSync(resolve(cwd, privateKey), 'utf-8');
+	else if(existsSync(resolve(cwd, privateKey || process.env.PRIVATEKEY_PATH)))
+		return readFileSync(resolve(cwd, privateKey || process.env.PRIVATEKEY_PATH), 'utf-8');
 	else throw new Error('private key not found!');
 }
 
@@ -24,7 +24,10 @@ const get = (configPath) => {
 		configPath || defaultConfigPath,
 		'utf-8'
 	));
+	config.app.id = config.app.id || process.env.APP_ID;
 	config.app.privateKey = parsePrivateKey(config.app.privateKey);
+	config.server.secret = config.server.secret || process.env.WEBHOOK_SECRET;
+
 	return config;
 }
 

@@ -3,10 +3,10 @@
   "timeZone": "Asia/Shanghai",
   "app": {
     // GitHub App ID
-    "id": "3092456",
+    "id": "",
     // GitHub App 私钥
     // 可以是路径 或 内容
-    "privateKey": "./key/kawaii-latedreambot.2026-03-14.private-key.pem",
+    "privateKey": "",
     // 使用的语言包
     "locale": "zh-CN",
     // 命令配置
@@ -26,7 +26,7 @@
     // 服务器端口
     "port": 429,
     // Webhooks 密钥
-    "secret": "dev-test-secret",
+    "secret": "",
     // 日志级别
     "logLevel": "info"
   },
