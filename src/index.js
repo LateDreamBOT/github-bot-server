@@ -43,8 +43,7 @@ app.use(async(ctx, next) => {
 					payload: body
 				});
 
-				ctx.status = 200;
-				ctx.body = 'ok';
+				ctx.status = 204;
 				return;
 			} else {
 				ctx.status = 405;
