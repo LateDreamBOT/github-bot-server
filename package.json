@@ -2,7 +2,7 @@
   "name": "latedream-github-bot-server",
   "type": "module",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "",
   "scripts": {
     "serve": "node src/index.js"
